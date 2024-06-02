@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8100107920956312329}
   - component: {fileID: 2126321596360085159}
   - component: {fileID: 6913851776899728123}
+  - component: {fileID: 7495666335625826930}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -100,6 +101,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldOfView: []
   FieldOfViewRange: 8
+  maxHitPoints: 30
+  hitPoints: 30
+  defense: 0
+  power: 0
 --- !u!114 &6913851776899728123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,5 +115,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca9f25d620728104eb5f2fb28540e64c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  IsFighting: 0
+--- !u!114 &7495666335625826930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4233301193583434418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af028bd8c61434a4f8119d19adbf4b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
     public bool IsFighting = false;
     private AStar algorithm;
 
+    public int confused = 0; // Toegevoegde variabele 'confused'
+
     private void Start()
     {
         GameManager.Get.AddEnemy(GetComponent<Actor>());
@@ -32,6 +34,14 @@ public class Enemy : MonoBehaviour
         // TODO: convert the position of the target to a gridPosition
         var gridPosition = MapManager.Get.FloorMap.WorldToCell(Target.transform.position);
 
+        // Check if the enemy is confused
+        if (confused > 0)
+        {
+            Debug.Log($"The {gameObject.name} is confused and cannot act."); // Toon een bericht
+            confused--; // Verminder de 'confused' waarde met 1
+            return; // Stop de uitvoering van de rest van de functie
+        }
+
         // First check if already fighting, because the FieldOfView check costs more cpu
         if (IsFighting || GetComponent<Actor>().FieldOfView.Contains(gridPosition))
         {
@@ -43,8 +53,11 @@ public class Enemy : MonoBehaviour
 
             // TODO: call MoveAlongPath with the gridPosition
             MoveAlongPath(gridPosition);
-
         }
+    }
 
+    public void Confuse() // Toegevoegde Confuse functie
+    {
+        confused = 8; // Zet de 'confused' waarde op 8
     }
 }
