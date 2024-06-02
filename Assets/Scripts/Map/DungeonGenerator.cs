@@ -7,7 +7,9 @@ public class DungeonGenerator : MonoBehaviour
     private int width, height;
     private int maxRoomSize, minRoomSize;
     private int maxRooms;
-    List<Room> rooms = new List<Room>();
+    private int maxEnemies;
+    private int maxItems;
+    private List<Room> rooms = new();
 
     public void SetSize(int width, int height)
     {
@@ -24,6 +26,15 @@ public class DungeonGenerator : MonoBehaviour
     public void SetMaxRooms(int max)
     {
         maxRooms = max;
+    }
+    public void SetMaxEnemies(int max)
+    {
+        maxEnemies = max;
+    }
+
+    public void SetMaxItems(int max)
+    {
+        maxItems = max;
     }
 
     public void Generate()
@@ -68,6 +79,9 @@ public class DungeonGenerator : MonoBehaviour
 
                 }
             }
+         
+            PlaceEnemies(room , maxEnemies);
+            PlaceItems(room , maxItems);    
 
             // create a coridor between rooms
             if (rooms.Count != 0)
@@ -105,7 +119,55 @@ public class DungeonGenerator : MonoBehaviour
         // set the floor tile
         MapManager.Get.FloorMap.SetTile(pos, MapManager.Get.FloorTile);
     }
+    private void PlaceEnemies(Room room, int maxEnemies)
+    {
+        // the number of enemies we want
+        int num = Random.Range(0, maxEnemies + 1);
 
+        for (int counter = 0; counter < num; counter++)
+        {
+            // The borders of the room are walls, so add and subtract by 1
+            int x = Random.Range(room.X + 1, room.X + room.Width - 1);
+            int y = Random.Range(room.Y + 1, room.Y + room.Height - 1);
+
+            // create different enemies
+            if (Random.value < 0.5f)
+            {
+                GameManager.Get.CreateActor("Kip", new Vector2(x, y));
+            }
+            else
+            {
+                GameManager.Get.CreateActor("Wesp", new Vector2(x, y));
+            }
+        }
+    }
+
+    private void PlaceItems(Room room, int maxItems)
+    {
+        // the number of items we want
+        int num = Random.Range(0, maxItems + 1);
+
+        for (int counter = 0; counter < num; counter++)
+        {
+            // The borders of the room are walls, so add and subtract by 1
+            int x = Random.Range(room.X + 1, room.X + room.Width - 1);
+            int y = Random.Range(room.Y + 1, room.Y + room.Height - 1);
+
+            // create different items
+            if (Random.value < 0.33f)
+            {
+                GameManager.Get.CreateActor("HealthPotion", new Vector2(x, y));
+            }
+            else if (Random.value < 0.66f)
+            {
+                GameManager.Get.CreateActor("Fireball", new Vector2(x, y));
+            }
+            else
+            {
+                GameManager.Get.CreateActor("ScrollOfConfusion", new Vector2(x, y));
+            }
+        }
+    }
     private void TunnelBetween(Room oldRoom, Room newRoom)
     {
         Vector2Int oldRoomCenter = oldRoom.Center();
