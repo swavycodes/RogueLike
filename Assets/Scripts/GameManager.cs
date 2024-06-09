@@ -14,8 +14,9 @@ public class GameManager : MonoBehaviour
 
     // List to hold consumable items in the game
     public List<Consumable> Items { get; private set; } = new List<Consumable>();
+    public List<Ladder> Ladders = new List<Ladder>();
+    public List<TombStone> TombStones = new List<TombStone>(); // List to hold tombstones in the game
 
-    // Awake is called when the script instance is being loaded
     private void Awake()
     {
         // Ensure only one instance of GameManager exists
@@ -105,11 +106,69 @@ public class GameManager : MonoBehaviour
         Items.Add(item);
     }
 
+    // Method to add a ladder to the Ladders list
+    public void AddLadder(Ladder ladder)
+    {
+        Ladders.Add(ladder);
+    }
+
+    // Method to add a tombstone to the TombStones list
+    public void AddTombStone(TombStone stone)
+    {
+        TombStones.Add(stone);
+    }
+
+    // Method to clear the floor
+    public void ClearFloor()
+    {
+        // Destroy all game objects and clear lists
+        foreach (var enemy in Enemies)
+        {
+            if (enemy != null)
+                Destroy(enemy.gameObject);
+        }
+        Enemies.Clear();
+
+        foreach (var item in Items)
+        {
+            if (item != null)
+                Destroy(item.gameObject);
+        }
+        Items.Clear();
+
+        foreach (var ladder in Ladders)
+        {
+            if (ladder != null)
+                Destroy(ladder.gameObject);
+        }
+        Ladders.Clear();
+
+        foreach (var stone in TombStones)
+        {
+            if (stone != null)
+                Destroy(stone.gameObject);
+        }
+        TombStones.Clear();
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
         // Assign the Player reference during initialization
         Player = GetComponent<Actor>();
+
+        // Create a new ladder object
+        GameObject ladderObject = new GameObject("Ladder");
+        Ladder newLadder = ladderObject.AddComponent<Ladder>();
+
+        // Optionally set the properties of the ladder
+        newLadder.Up = true; // Example setting, change as needed
+
+        // Position the ladder at a desired location
+        ladderObject.transform.position = new Vector3(0, 0, 0); // Example position, change as needed
+
+        // Add the ladder to the GameManager
+        AddLadder(newLadder);
     }
 
     // Method to start the turn of enemies

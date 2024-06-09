@@ -18,12 +18,18 @@ public class Actor : MonoBehaviour
     [SerializeField] private int hitPoints = 30; // Current hit points
     [SerializeField] private int defense; // Defense value
     [SerializeField] private int power; // Power value
+    [SerializeField] private int level = 1; // Current level    
+    [SerializeField] private int xp; 
+    [SerializeField] private int xpToNextLevel = 100;
 
     // Public properties to access the private fields
     public int MaxHitPoints => maxHitPoints;
     public int HitPoints => hitPoints;
     public int Defense => defense;
     public int Power => power;
+    public int Level { get => level; }
+    public int XP { get => xp; }
+    public int XPToNextLevel { get => xpToNextLevel; }
 
     // Called when the script instance is being loaded
     private void Start()
@@ -86,7 +92,7 @@ public class Actor : MonoBehaviour
     }
 
     // Method to deal damage to the actor
-    public void DoDamage(int hp)
+    public void DoDamage(int hp , Actor attacker)
     {
         hitPoints -= hp; // Decrease the current hit points
 
@@ -137,4 +143,62 @@ public class Actor : MonoBehaviour
             MapManager.Get.UpdateFogMap(FieldOfView);
         }
     }
+    private void LevelUp()
+    {
+        // Verhoog het level van de acteur met 1
+        level++;
+
+        // Bereken de nieuwe XP drempel voor het volgende level, verhoog met 50%
+        xpToNextLevel = Mathf.RoundToInt(xpToNextLevel * 1.5f);
+
+        // Verhoog het maximum aantal hit points met 10
+        maxHitPoints += 10;
+
+        // Verhoog de verdediging van de acteur met 2
+        defense += 2;
+
+        // Verhoog de kracht (power) van de acteur met 2
+        power += 2;
+
+        // Zet de huidige hit points gelijk aan het nieuwe maximum aantal hit points
+        hitPoints = maxHitPoints;
+
+        // Controleer of dit object een Player-component heeft
+        if (GetComponent<Player>())
+        {
+            // Voeg een bericht toe aan de UI om de speler te informeren over de level-up
+            UIManager.Instance.AddMessage("You have leveled up!", Color.yellow);
+
+            // Werk de gezondheidsweergave bij in de UI met de nieuwe hit points en maximale hit points
+            UIManager.Instance.UpdateHealth(hitPoints, MaxHitPoints);
+
+            // Werk de levelweergave bij in de UI met het nieuwe level
+            UIManager.Instance.UpdateLevel(level);
+        }
+    }
+
+
+    public void AddXP(int xp)
+    {
+        // Voeg de ontvangen XP toe aan de huidige XP van de speler
+        this.xp += xp;
+
+        // Blijf controleren of de huidige XP voldoende is om een nieuw level te bereiken
+        while (this.xp >= xpToNextLevel)
+        {
+            // Trek de benodigde XP voor het volgende level af van de huidige XP
+            this.xp -= xpToNextLevel;
+
+            // Roep de LevelUp-methode aan om de speler een level hoger te brengen
+            LevelUp();
+        }
+
+        // Controleer of dit object een Player-component heeft
+        if (GetComponent<Player>())
+        {
+            // Werk de gebruikersinterface bij om de nieuwe XP-waarde weer te geven
+            UIManager.Instance.UpdateXP(this.xp);
+        }
+    }
+
 }
