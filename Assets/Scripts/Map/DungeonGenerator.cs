@@ -10,6 +10,17 @@ public class DungeonGenerator : MonoBehaviour
     private int maxItems;
     private int currentFloor = 0; // Toegevoegde variabele voor huidige verdieping
     private List<Room> rooms = new List<Room>();
+    private List<string> enemyNames = new List<string>
+    {
+        "Enemy1",
+        "Enemy2",
+        "Enemy3",
+        "Enemy4",
+       "Enemy5",
+        "Enemy6",
+        "Enemy7",
+        "Enemy8"
+    };
 
     public void SetSize(int width, int height)
     {
@@ -133,21 +144,27 @@ public class DungeonGenerator : MonoBehaviour
 
     private void PlaceEnemies(Room room, int maxEnemies)
     {
+        // Bepaal het aantal vijanden dat in deze kamer geplaatst moet worden. 
+        // Dit aantal varieert tussen 0 en maxEnemies (inclusief).
         int num = Random.Range(0, maxEnemies + 1);
 
+        // Plaats het bepaalde aantal vijanden in de kamer.
         for (int counter = 0; counter < num; counter++)
         {
+            // Kies willekeurige x- en y-coördinaten binnen de grenzen van de kamer, exclusief de randen.
             int x = Random.Range(room.X + 1, room.X + room.Width - 1);
             int y = Random.Range(room.Y + 1, room.Y + room.Height - 1);
 
-            if (Random.value < 0.5f)
-            {
-                GameManager.Get.CreateActor("Kip", new Vector2(x, y));
-            }
-            else
-            {
-                GameManager.Get.CreateActor("Wesp", new Vector2(x, y));
-            }
+            // Bepaal de maximale index van vijanden die beschikbaar zijn op basis van de huidige verdieping.
+            // De index is minimaal 1 en maximaal het aantal vijandennamen.
+            int maxEnemyIndex = Mathf.Clamp(currentFloor + 1, 1, enemyNames.Count);
+
+            // Kies willekeurig een vijand uit de beschikbare vijanden op basis van de berekende maximale index.
+            int enemyIndex = Random.Range(0, maxEnemyIndex);
+            string enemyName = enemyNames[enemyIndex];
+
+            // Maak een vijand aan op de willekeurig gekozen positie in de kamer.
+            GameManager.Get.CreateActor(enemyName, new Vector2(x, y));
         }
     }
 

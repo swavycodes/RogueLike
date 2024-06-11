@@ -70,9 +70,39 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
         }
     }
 
+    public void OnLadder(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            // Vraag de GameManager naar een ladder op de huidige locatie van de speler
+            Ladder ladder = GameManager.Get.GetLadderAtLocation(transform.position);
 
-   
-        public void OnExit(InputAction.CallbackContext context)
+            // Controleer of er een ladder is op de huidige locatie
+            if (ladder != null)
+            {
+                if (ladder.Up)
+                {
+                    // Logica om omhoog te gaan
+                    Debug.Log("Using the ladder to go up.");
+                    // Voeg hier de logica toe om de speler omhoog te verplaatsen
+                }
+                else
+                {
+                    // Logica om omlaag te gaan
+                    Debug.Log("Using the ladder to go down.");
+                    // Voeg hier de logica toe om de speler omlaag te verplaatsen
+                }
+            }
+            else
+            {
+                Debug.Log("No ladder at this location.");
+            }
+        }
+    }
+
+
+
+    public void OnExit(InputAction.CallbackContext context)
         {
             // Controleer of de actie is uitgevoerd (bijvoorbeeld een toets of knop is ingedrukt)
             if (context.performed)
@@ -235,7 +265,21 @@ public class Player : MonoBehaviour, Controls.IPlayerActions
         }
     }
 
-
+    private void CheckForLadder()
+    {
+        Ladder ladder = GameManager.Get.GetLadderAtLocation(transform.position);
+        if (ladder != null)
+        {
+            if (ladder.Up)
+            {
+                MapManager.Get.MoveUp();
+            }
+            else
+            {
+                MapManager.Get.MoveDown();
+            }
+        }
+    }
 
 
 }

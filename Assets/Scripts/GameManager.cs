@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Items; // Import the Items namespace where Consumable class is defined
@@ -61,6 +60,19 @@ public class GameManager : MonoBehaviour
             if (item != null && item.transform.position == location)
             {
                 return item;
+            }
+        }
+        return null;
+    }
+
+    // Method to get a ladder at a specific location
+    public Ladder GetLadderAtLocation(Vector3 location)
+    {
+        foreach (var ladder in Ladders)
+        {
+            if (ladder != null && ladder.transform.position == location)
+            {
+                return ladder;
             }
         }
         return null;
